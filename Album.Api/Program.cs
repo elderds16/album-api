@@ -1,41 +1,88 @@
-var builder = WebApplication.CreateBuilder(args);
+using Album.Api.Data;
+using Album.Api.Interfaces;
+using Album.Api.Repositories;
+using Album.Api.Services;
+using Microsoft.EntityFrameworkCore;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+namespace Album.Api;
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.MapOpenApi();
-}
+    public static void Main(string[] args)
+    {
+        var builder = CreateBuilder(args);
+        var app = builder.Build();
 
-app.UseHttpsRedirection();
+        app.UseCors("AllowS3Bucket");
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+        InitializeDatabase(app);
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
-app.Run();
+        app.MapHealthChecks("/health");
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.Run();
+    }
+
+    private static WebApplicationBuilder CreateBuilder(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Add services to the container.
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowS3Bucket", policy =>
+            {
+                policy.WithOrigins("http://cnsd-react-app-9742-3215-8418.s3-website-us-east-1.amazonaws.com")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
+        builder.Services.AddControllers();
+
+        builder.Services.AddDbContext<AlbumContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+        builder.Services.AddScoped<IAlbumService, AlbumService>();
+        builder.Services.AddScoped<GreetingService>();
+
+        builder.Services.AddHealthChecks();
+
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        return builder;
+    }
+
+    private static void InitializeDatabase(IHost app)
+    {
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+
+        try
+        {
+            var context = services.GetRequiredService<AlbumContext>();
+            DbInitializer.Initialize(context);
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occured seeding the DB.");
+        }
+    }
 }
