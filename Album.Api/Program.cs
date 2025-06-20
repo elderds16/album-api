@@ -24,6 +24,9 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         app.MapHealthChecks("/health");
 
         app.UseHttpsRedirection();
