@@ -31,3 +31,6 @@ jobs:
 
       - name: Test Integration Tests
         run: dotnet test Album.Api.IntegrationTests/Album.Api.IntegrationTests.csproj --no-build --verbosity normal
+
+      - name: Build the Docker image
+        run: docker build -t album-api:${{ github.run_number }} -f Album.Api/Dockerfile .
