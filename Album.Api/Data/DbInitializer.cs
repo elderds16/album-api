@@ -6,7 +6,10 @@ public static class DbInitializer
 {
     public static void Initialize(AlbumContext context)
     {
-        context.Database.Migrate();
+        if (context.Database.IsRelational())
+        {
+            context.Database.Migrate();
+        }
 
         if (context.Albums.Any())
         {
@@ -27,12 +30,7 @@ public static class DbInitializer
             new () { Id = Guid.NewGuid(), Name = "Born in the U.S.A.", Artist = "Bruce Springsteen", ImageUrl = "https://upload.wikimedia.org/wikipedia/en/3/31/BruceBorn1984.JPG" }
         };
 
-        foreach (var album in albums)
-        {
-            context.Albums.Add(album);
-        }
-
+        context.Albums.AddRange(albums);
         context.SaveChanges();
     }
 }
-
