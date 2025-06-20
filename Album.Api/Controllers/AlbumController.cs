@@ -17,6 +17,10 @@ public class AlbumController : ControllerBase
         _albumService = albumService;
     }
 
+    /// <summary>
+    /// Haalt alle albums op
+    /// </summary>
+    /// <returns>Lijst van albums</returns>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<AlbumDto>), 200)]
     public async Task<ActionResult<IEnumerable<AlbumDto>>> GetAlbums()
@@ -25,9 +29,14 @@ public class AlbumController : ControllerBase
         return Ok(albums);
     }
 
+    /// <summary>
+    /// Haalt een specifiek album op op basis van ID
+    /// </summary>
+    /// <param name="id">Album ID (GUID)</param>
+    /// <returns>Gevonden album</returns>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(AlbumDto), 200)]
-    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
     public async Task<ActionResult<AlbumDto>> GetAlbum(Guid id)
     {
         var album = await _albumService.GetAlbumByIdAsync(id);
@@ -39,7 +48,11 @@ public class AlbumController : ControllerBase
         return album;
     }
 
-
+    /// <summary>
+    /// Wijzigt een bestaand album
+    /// </summary>
+    /// <param name="id">Album ID</param>
+    /// <param name="updateAlbumDto">Geüpdatete gegevens</param>
     [HttpPut("{id}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
@@ -70,6 +83,11 @@ public class AlbumController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Maakt een nieuw album aan
+    /// </summary>
+    /// <param name="createAlbumDto">Albumgegevens</param>
+    /// <returns>Gemaakt album</returns>
     [HttpPost]
     [ProducesResponseType(typeof(AlbumDto), 201)]
     [ProducesResponseType(400)]
@@ -87,6 +105,10 @@ public class AlbumController : ControllerBase
         return CreatedAtAction(nameof(GetAlbum), new { id = createdAlbum.Id }, createdAlbum);
     }
 
+    /// <summary>
+    /// Verwijdert een album op basis van ID
+    /// </summary>
+    /// <param name="id">Album ID</param>
     [HttpDelete("{id}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
@@ -99,8 +121,6 @@ public class AlbumController : ControllerBase
         }
 
         await _albumService.DeleteAlbumAsync(id);
-
         return NoContent();
     }
 }
-
