@@ -16,11 +16,6 @@
         }
       ],
       "essential": true,
-      "environment": [],
-      "environmentFiles": [],
-      "mountPoints": [],
-      "volumesFrom": [],
-      "ulimits": [],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -30,15 +25,11 @@
           "max-buffer-size": "25m",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
-        },
-        "secretOptions": []
-      },
-      "systemControls": []
+        }
+      }
     }
   ],
-  "requiresCompatibilities": [
-    "FARGATE"
-  ],
+  "requiresCompatibilities": [ "FARGATE" ],
   "cpu": "256",
   "memory": "512",
   "executionRoleArn": "arn:aws:iam::992382793320:role/LabRole",
