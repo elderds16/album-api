@@ -94,6 +94,5 @@
   },
   "registeredAt": "2025-06-20T18:17:51.895Z",
   "registeredBy": "arn:aws:sts::992382793320:assumed-role/voclabs/user4069718=Elder_dos_dos_Santos",
-  "enableFaultInjection": false,
   "tags": []
 }
