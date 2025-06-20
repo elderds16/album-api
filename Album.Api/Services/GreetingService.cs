@@ -1,4 +1,4 @@
-using Album.Api.Models;
+﻿using Album.Api.Models;
 using System.Net;
 
 namespace Album.Api.Services;

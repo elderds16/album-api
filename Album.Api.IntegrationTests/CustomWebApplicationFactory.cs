@@ -23,7 +23,6 @@ namespace Album.Api.Tests.IntegrationTests
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                 });
 
-                
                 var sp = services.BuildServiceProvider();
 
                 using var scope = sp.CreateScope();

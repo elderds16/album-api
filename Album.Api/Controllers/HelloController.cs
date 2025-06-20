@@ -1,4 +1,4 @@
-using Album.Api.Services;
+﻿using Album.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Album.Api.Controllers
@@ -23,7 +23,7 @@ namespace Album.Api.Controllers
 
             var greeting = _greetingService.GetGreeting(name);
 
-            _logger.LogInformation("Generated greeting: {Greeting}", greeting);
+            _logger.LogInformation("Generated greeting: {Greeting}",greeting);
 
             return Ok(greeting);
         }

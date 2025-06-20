@@ -1,4 +1,4 @@
-using Album.Api.Data;
+﻿using Album.Api.Data;
 using Album.Api.Models.Dtos;
 using Album.Api.Tests.IntegrationTests;
 using Microsoft.Extensions.DependencyInjection;

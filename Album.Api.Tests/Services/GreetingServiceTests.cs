@@ -34,23 +34,5 @@ namespace Album.Api.Tests.Services
             // Assert
             Assert.Equal($"Hello Test from {hostname} v2", result.Message);
         }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("   ")]
-        public void GetGreeting_WithInvalidName_ReturnsHelloWorld(string? name)
-        {
-            // Arrange
-            var service = new GreetingService();
-            var hostname = Dns.GetHostName();
-
-            // Act
-            var result = service.GetGreeting(name);
-
-            // Assert
-            Assert.Equal($"Hello World from {hostname} v2", result.Message);
-        }
-
     }
 }

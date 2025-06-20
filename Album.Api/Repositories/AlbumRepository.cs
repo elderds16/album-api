@@ -1,4 +1,4 @@
-using Album.Api.Data;
+﻿using Album.Api.Data;
 using Album.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
