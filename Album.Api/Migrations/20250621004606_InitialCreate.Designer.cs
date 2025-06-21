@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Album.Api.Migrations
 {
     [DbContext(typeof(AlbumContext))]
-    [Migration("20250621000120_InitialCreate")]
+    [Migration("20250621004606_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
