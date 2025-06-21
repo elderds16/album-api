@@ -23,7 +23,7 @@ namespace Album.Api.IntegrationTests.Controllers
         [Fact]
         public async Task CreateTrack_ForExistingAlbum_ReturnsCreated()
         {
-            // Arrange: maak een album aan via API
+            // Arrange: voeg test-album toe
             var album = new CreateAlbumDto
             {
                 Name = "Test Album",
@@ -35,17 +35,16 @@ namespace Album.Api.IntegrationTests.Controllers
             albumResponse.EnsureSuccessStatusCode();
             var createdAlbum = await albumResponse.Content.ReadFromJsonAsync<AlbumDto>();
 
-            // Maak een track DTO zonder AlbumId property
             var newTrack = new CreateTrackDto
             {
                 Title = "My Track",
                 Artist = "Track Artist",
-                Duration = 180
-                // GEEN AlbumId hier!
+                Duration = 180,
+                AlbumId = createdAlbum!.Id
             };
 
-            // Act: POST naar /api/albums/{albumId}/tracks met albumId in route
-            var response = await _client.PostAsJsonAsync($"/api/albums/{createdAlbum!.Id}/tracks", newTrack);
+            // Act
+            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
 
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -58,18 +57,21 @@ namespace Album.Api.IntegrationTests.Controllers
         [Fact]
         public async Task CreateTrack_ForNonExistingAlbum_ReturnsNotFound()
         {
+            // Arrange
             var nonExistentAlbumId = Guid.NewGuid();
 
             var newTrack = new CreateTrackDto
             {
                 Title = "Invalid Track",
                 Artist = "Ghost Artist",
-                Duration = 120
-                // GEEN AlbumId hier!
+                Duration = 120,
+                AlbumId = nonExistentAlbumId
             };
 
-            var response = await _client.PostAsJsonAsync($"/api/albums/{nonExistentAlbumId}/tracks", newTrack);
+            // Act
+            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
 
+            // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }

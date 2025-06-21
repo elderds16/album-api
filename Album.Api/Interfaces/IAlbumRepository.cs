@@ -1,12 +1,12 @@
-﻿using Album.Api.Models.Dtos;
+﻿namespace Album.Api.Interfaces;
 
-namespace Album.Api.Interfaces;
-
-public interface IAlbumService
+public interface IAlbumRepository
 {
-    Task<AlbumDto> CreateAlbumAsync(CreateAlbumDto createAlbumDto);
+    Task<Models.Album> CreateAlbumAsync(Models.Album album);
     Task DeleteAlbumAsync(Guid id);
-    Task<AlbumDto?> GetAlbumByIdAsync(Guid id);
-    Task<IEnumerable<AlbumDto>> GetAllAlbumsAsync();
-    Task UpdateAlbumAsync(Guid id, UpdateAlbumDto updateAlbumDto);
+    Task<Models.Album?> GetAlbumByIdAsync(Guid id);
+    Task<IEnumerable<Models.Album>> GetAllAlbumsAsync();
+    Task UpdateAlbumAsync(Models.Album album);
+    Task<bool> AlbumExistsAsync(Guid id);
+    Task<bool> AlbumExistsByNameAndArtistAsync(string name, string artist);
 }

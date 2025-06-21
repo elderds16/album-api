@@ -10,3 +10,4 @@ public interface IAlbumService
     Task<IEnumerable<AlbumDto>> GetAllAlbumsAsync();
     Task UpdateAlbumAsync(Guid id, UpdateAlbumDto updateAlbumDto);
 }
+
