@@ -24,7 +24,6 @@ namespace Album.Api.Tests.Controllers
         [Fact]
         public async Task CreateTrack_ValidAlbum_ReturnsCreated()
         {
-            // Arrange
             var context = GetInMemoryDbContext();
 
             var album = new AlbumModel
@@ -38,15 +37,16 @@ namespace Album.Api.Tests.Controllers
             await context.SaveChangesAsync();
 
             var controller = new TrackController(context);
+
             var newTrack = new CreateTrackDto
             {
                 Title = "Track 1",
                 Artist = "Track Artist",
-                Duration = 200,
-                AlbumId = album.Id  // moet overeenkomen met albumId in URL
+                Duration = 200
+                // AlbumId NIET instellen, komt uit URL parameter
             };
 
-            // Act: roep CreateTrack aan met album.Id + DTO
+            // Act
             var result = await controller.CreateTrack(album.Id, newTrack);
 
             // Assert
@@ -54,7 +54,6 @@ namespace Album.Api.Tests.Controllers
             var dto = Assert.IsType<TrackDto>(createdResult.Value);
             Assert.Equal("Track 1", dto.Title);
         }
-
 
         [Fact]
         public async Task CreateTrack_NonExistingAlbum_ReturnsNotFound()
@@ -68,14 +67,15 @@ namespace Album.Api.Tests.Controllers
             {
                 Title = "Ghost Track",
                 Artist = "Nobody",
-                Duration = 120,
-                AlbumId = nonExistingAlbumId
+                Duration = 120
+                // AlbumId ook weglaten
             };
 
             var result = await controller.CreateTrack(nonExistingAlbumId, newTrack);
 
             Assert.IsType<NotFoundObjectResult>(result);
         }
+
 
 
         [Fact]
