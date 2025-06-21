@@ -35,16 +35,14 @@ namespace Album.Api.IntegrationTests.Controllers
             albumResponse.EnsureSuccessStatusCode();
 
             var createdAlbum = await albumResponse.Content.ReadFromJsonAsync<AlbumDto>();
-
-            // Check expliciet dat createdAlbum niet null is
             Assert.NotNull(createdAlbum);
 
             var newTrack = new CreateTrackDto
             {
                 Title = "My Track",
                 Artist = "Track Artist",
-                Duration = 180,
-                AlbumId = createdAlbum.Id  // nu veilig, want niet null
+                Duration = 180
+                // AlbumId NIET instellen, want die komt uit URL
             };
 
             // Act
@@ -58,27 +56,23 @@ namespace Album.Api.IntegrationTests.Controllers
             Assert.Equal("My Track", result!.Title);
         }
 
-
-
         [Fact]
         public async Task CreateTrack_ForNonExistingAlbum_ReturnsNotFound()
         {
-            // Arrange
             var nonExistentAlbumId = Guid.NewGuid();
 
             var newTrack = new CreateTrackDto
             {
                 Title = "Invalid Track",
                 Artist = "Ghost Artist",
-                Duration = 120,
-                AlbumId = nonExistentAlbumId
+                Duration = 120
+                // AlbumId NIET instellen
             };
 
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
+            var response = await _client.PostAsJsonAsync($"/api/albums/{nonExistentAlbumId}/tracks", newTrack);
 
-            // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
+
     }
 }
