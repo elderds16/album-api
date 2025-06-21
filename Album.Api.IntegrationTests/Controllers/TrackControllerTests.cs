@@ -40,11 +40,11 @@ namespace Album.Api.IntegrationTests.Controllers
                 Title = "My Track",
                 Artist = "Track Artist",
                 Duration = 180,
-                AlbumId = createdAlbum!.Id
+                AlbumId = createdAlbum!.Id  // Zorg dat die klopt met URL
             };
 
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
+            // Act: POST naar juiste URL met albumId in route
+            var response = await _client.PostAsJsonAsync($"/api/albums/{createdAlbum.Id}/tracks", newTrack);
 
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -68,8 +68,8 @@ namespace Album.Api.IntegrationTests.Controllers
                 AlbumId = nonExistentAlbumId
             };
 
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
+            // Act: POST naar juiste URL met fictief albumId
+            var response = await _client.PostAsJsonAsync($"/api/albums/{nonExistentAlbumId}/tracks", newTrack);
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
