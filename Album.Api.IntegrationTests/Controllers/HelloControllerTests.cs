@@ -1,49 +1,78 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
+using Album.Api.Tests.IntegrationTests;
+using Album.Api.Models.Dtos;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace Album.Api.IntegrationTests.Controllers
 {
-    public class HelloControllerTests : IClassFixture<WebApplicationFactory<Program>>
+    using AlbumModel = Album.Api.Models.Album; // voorkom 'Album is a namespace'
 
+    public class TrackControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory<Program> _factory;
 
-        public HelloControllerTests(WebApplicationFactory<Program> factory)
+        public TrackControllerTests(CustomWebApplicationFactory<Program> factory)
         {
             _factory = factory;
-            _client = _factory.CreateClient();
+            _client = factory.CreateClient();
         }
 
-
-        [Theory]
-        [InlineData(null, "Hello World")]
-        [InlineData("Test", "Hello Test")]
-        [InlineData("", "Hello World")]
-        [InlineData(" ", "Hello World")]
-        public async Task Get_HelloEndpoint_ReturnsExpectedResponse(string? name, string baseExpectedMessage)
+        [Fact]
+        public async Task CreateTrack_ForExistingAlbum_ReturnsCreated()
         {
-            // Arrange
-            var url = name == null ? "api/hello" : $"/api/hello?name={name}";
-            var hostname = Dns.GetHostName();
-            var expectedMessage = $"{baseExpectedMessage} from {hostname} v2";
+            // Arrange: voeg test-album toe
+            var album = new CreateAlbumDto
+            {
+                Name = "Test Album",
+                Artist = "Test Artist",
+                ImageUrl = "http://test.com/image.png"
+            };
 
-            // Act 
-            var response = await _client.GetAsync(url);
+            var albumResponse = await _client.PostAsJsonAsync("/api/Album", album);
+            albumResponse.EnsureSuccessStatusCode();
+            var createdAlbum = await albumResponse.Content.ReadFromJsonAsync<AlbumDto>();
+
+            var newTrack = new CreateTrackDto
+            {
+                Title = "My Track",
+                Artist = "Track Artist",
+                Duration = 180,
+                AlbumId = createdAlbum!.Id
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var result = await response.Content.ReadFromJsonAsync<GreetingResponse>();
-            result.Should().NotBeNull();
-            result!.Message.Should().Be(expectedMessage);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+            var result = await response.Content.ReadFromJsonAsync<TrackDto>();
+            Assert.NotNull(result);
+            Assert.Equal("My Track", result!.Title);
         }
 
-
-        private class GreetingResponse
+        [Fact]
+        public async Task CreateTrack_ForNonExistingAlbum_ReturnsNotFound()
         {
-            public string Message { get; set; } = null!;
+            // Arrange
+            var nonExistentAlbumId = Guid.NewGuid();
+
+            var newTrack = new CreateTrackDto
+            {
+                Title = "Invalid Track",
+                Artist = "Ghost Artist",
+                Duration = 120,
+                AlbumId = nonExistentAlbumId
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }

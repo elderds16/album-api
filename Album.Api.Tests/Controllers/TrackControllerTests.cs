@@ -43,7 +43,7 @@ namespace Album.Api.Tests.Controllers
                 Title = "Track 1",
                 Artist = "Track Artist",
                 Duration = 200,
-                // AlbumId is niet meer nodig in DTO
+                AlbumId = album.Id  // moet overeenkomen met albumId in URL
             };
 
             // Act: roep CreateTrack aan met album.Id + DTO
@@ -69,7 +69,7 @@ namespace Album.Api.Tests.Controllers
                 Title = "Ghost Track",
                 Artist = "Nobody",
                 Duration = 120,
-                // AlbumId niet meer in DTO
+                AlbumId = nonExistingAlbumId
             };
 
             var result = await controller.CreateTrack(nonExistingAlbumId, newTrack);
