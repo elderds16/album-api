@@ -23,7 +23,7 @@ namespace Album.Api.IntegrationTests.Controllers
         [Fact]
         public async Task CreateTrack_ForExistingAlbum_ReturnsCreated()
         {
-            // Arrange: voeg test-album toe
+            // Arrange: maak een album via API
             var album = new CreateAlbumDto
             {
                 Name = "Test Album",
@@ -39,12 +39,11 @@ namespace Album.Api.IntegrationTests.Controllers
             {
                 Title = "My Track",
                 Artist = "Track Artist",
-                Duration = 180,
-                AlbumId = createdAlbum!.Id
+                Duration = 180
             };
 
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
+            // Act: POST naar juiste route met albumId in URL
+            var response = await _client.PostAsJsonAsync($"/api/albums/{createdAlbum.Id}/tracks", newTrack);
 
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -53,6 +52,7 @@ namespace Album.Api.IntegrationTests.Controllers
             Assert.NotNull(result);
             Assert.Equal("My Track", result!.Title);
         }
+
 
         [Fact]
         public async Task CreateTrack_ForNonExistingAlbum_ReturnsNotFound()
