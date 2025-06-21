@@ -2,17 +2,25 @@
 using Album.Api.Models.Dtos;
 using Microsoft.EntityFrameworkCore;
 using AlbumModel = Album.Api.Models.Album;
+using Album.Api.Data;
+
+
 
 namespace Album.Api.Services;
 
 public class AlbumService : IAlbumService
 {
     private readonly IAlbumRepository _albumRepository;
+    private readonly AlbumContext _context;
 
-    public AlbumService(IAlbumRepository albumRepository)
+
+
+    public AlbumService(IAlbumRepository albumRepository, AlbumContext context)
     {
         _albumRepository = albumRepository;
+        _context = context;
     }
+
 
     public async Task<AlbumDto> CreateAlbumAsync(CreateAlbumDto createAlbumDto)
     {
@@ -37,8 +45,17 @@ public class AlbumService : IAlbumService
             Id = album.Id,
             Name = album.Name,
             Artist = album.Artist,
-            ImageUrl = album.ImageUrl
+            ImageUrl = album.ImageUrl,
+            Tracks = album.Tracks?.Select(t => new TrackDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Artist = t.Artist,
+                Duration = t.Duration
+            }).ToList() ?? new List<TrackDto>()
         };
+
+
     }
 
     public async Task DeleteAlbumAsync(Guid id)
@@ -48,7 +65,11 @@ public class AlbumService : IAlbumService
 
     public async Task<AlbumDto?> GetAlbumByIdAsync(Guid id)
     {
-        var album = await _albumRepository.GetAlbumByIdAsync(id);
+        // Laad album met tracks (gebruik context of repository)
+        var album = await _context.Albums
+            .Include(a => a.Tracks)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
         if (album == null)
         {
             return null;
@@ -59,21 +80,40 @@ public class AlbumService : IAlbumService
             Id = album.Id,
             Name = album.Name,
             Artist = album.Artist,
-            ImageUrl = album.ImageUrl
+            ImageUrl = album.ImageUrl,
+            Tracks = album.Tracks.Select(t => new TrackDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Artist = t.Artist,
+                Duration = t.Duration
+            }).ToList()
         };
     }
 
+
     public async Task<IEnumerable<AlbumDto>> GetAllAlbumsAsync()
     {
-        var albums = await _albumRepository.GetAllAlbumsAsync();
+        var albums = await _context.Albums
+            .Include(a => a.Tracks)
+            .ToListAsync();
+
         return albums.Select(a => new AlbumDto
         {
             Id = a.Id,
             Name = a.Name,
             Artist = a.Artist,
-            ImageUrl = a.ImageUrl
+            ImageUrl = a.ImageUrl,
+            Tracks = a.Tracks.Select(t => new TrackDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Artist = t.Artist,
+                Duration = t.Duration
+            }).ToList()
         });
     }
+
 
     public async Task UpdateAlbumAsync(Guid id, UpdateAlbumDto updateAlbumDto)
     {

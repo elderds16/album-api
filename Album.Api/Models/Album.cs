@@ -18,4 +18,7 @@ public class Album
     [Required] 
     [MaxLength(500)] 
     public string ImageUrl { get; set; } = null!;
+
+    public ICollection<Track> Tracks { get; set; } = new List<Track>();
+
 }

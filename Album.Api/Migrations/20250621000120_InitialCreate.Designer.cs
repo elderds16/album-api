@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Album.Api.Migrations
 {
     [DbContext(typeof(AlbumContext))]
-    [Migration("20250620201651_InitialCreate")]
+    [Migration("20250621000120_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -48,10 +48,52 @@ namespace Album.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name", "Artist")
-                        .IsUnique();
-
                     b.ToTable("Albums");
+                });
+
+            modelBuilder.Entity("Album.Api.Models.Track", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("AlbumId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Artist")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlbumId");
+
+                    b.ToTable("Tracks");
+                });
+
+            modelBuilder.Entity("Album.Api.Models.Track", b =>
+                {
+                    b.HasOne("Album.Api.Models.Album", "Album")
+                        .WithMany("Tracks")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Album");
+                });
+
+            modelBuilder.Entity("Album.Api.Models.Album", b =>
+                {
+                    b.Navigation("Tracks");
                 });
 #pragma warning restore 612, 618
         }
