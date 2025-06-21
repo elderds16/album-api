@@ -65,8 +65,15 @@ public class AlbumService : IAlbumService
 
     public async Task<AlbumDto?> GetAlbumByIdAsync(Guid id)
     {
-        var album = await _albumRepository.GetAlbumByIdAsync(id);
-        if (album == null) return null;
+        // Laad album met tracks (gebruik context of repository)
+        var album = await _context.Albums
+            .Include(a => a.Tracks)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        if (album == null)
+        {
+            return null;
+        }
 
         return new AlbumDto
         {
@@ -74,19 +81,22 @@ public class AlbumService : IAlbumService
             Name = album.Name,
             Artist = album.Artist,
             ImageUrl = album.ImageUrl,
-            Tracks = album.Tracks?.Select(t => new TrackDto
+            Tracks = album.Tracks.Select(t => new TrackDto
             {
                 Id = t.Id,
                 Title = t.Title,
                 Artist = t.Artist,
                 Duration = t.Duration
-            }).ToList() ?? new List<TrackDto>()
+            }).ToList()
         };
     }
 
+
     public async Task<IEnumerable<AlbumDto>> GetAllAlbumsAsync()
     {
-        var albums = await _albumRepository.GetAllAlbumsAsync();
+        var albums = await _context.Albums
+            .Include(a => a.Tracks)
+            .ToListAsync();
 
         return albums.Select(a => new AlbumDto
         {
@@ -94,16 +104,15 @@ public class AlbumService : IAlbumService
             Name = a.Name,
             Artist = a.Artist,
             ImageUrl = a.ImageUrl,
-            Tracks = a.Tracks?.Select(t => new TrackDto
+            Tracks = a.Tracks.Select(t => new TrackDto
             {
                 Id = t.Id,
                 Title = t.Title,
                 Artist = t.Artist,
                 Duration = t.Duration
-            }).ToList() ?? new List<TrackDto>()
+            }).ToList()
         });
     }
-
 
 
     public async Task UpdateAlbumAsync(Guid id, UpdateAlbumDto updateAlbumDto)
