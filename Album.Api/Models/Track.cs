@@ -8,7 +8,7 @@
         public int Duration { get; set; } // in seconds
 
         // Foreign key
-        public Guid AlbumId { get; set; }  
+        public Guid AlbumId { get; set; }
         public Album Album { get; set; } = null!;
 
     }
