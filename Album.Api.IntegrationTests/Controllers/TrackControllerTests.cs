@@ -35,16 +35,16 @@ namespace Album.Api.IntegrationTests.Controllers
             albumResponse.EnsureSuccessStatusCode();
             var createdAlbum = await albumResponse.Content.ReadFromJsonAsync<AlbumDto>();
 
+            // Maak nieuwe track DTO zonder AlbumId property
             var newTrack = new CreateTrackDto
             {
                 Title = "My Track",
                 Artist = "Track Artist",
-                Duration = 180,
-                AlbumId = createdAlbum!.Id
+                Duration = 180
             };
 
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
+            // Act: POST naar /api/albums/{albumId}/tracks met juiste URL + body zonder albumId
+            var response = await _client.PostAsJsonAsync($"/api/albums/{createdAlbum!.Id}/tracks", newTrack);
 
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -64,12 +64,11 @@ namespace Album.Api.IntegrationTests.Controllers
             {
                 Title = "Invalid Track",
                 Artist = "Ghost Artist",
-                Duration = 120,
-                AlbumId = nonExistentAlbumId
+                Duration = 120
             };
 
             // Act
-            var response = await _client.PostAsJsonAsync("/api/Track", newTrack);
+            var response = await _client.PostAsJsonAsync($"/api/albums/{nonExistentAlbumId}/tracks", newTrack);
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
