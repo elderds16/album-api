@@ -5,6 +5,8 @@ using Moq;
 using AlbumModel = Album.Api.Models.Album;
 using Microsoft.EntityFrameworkCore;
 using Album.Api.Data;
+using Album.Api.Models;
+
 
 namespace Album.Api.Tests.Services;
 
@@ -101,10 +103,13 @@ public class AlbumServiceTests
             Id = albumId,
             Name = "Test Album",
             Artist = "Test Artist",
-            ImageUrl = "http://testimage.com"
+            ImageUrl = "http://testimage.com",
+            Tracks = new List<Track>() // voeg eventueel lege of test tracks toe als je wilt
         };
 
-        _mockRepository.Setup(r => r.GetAlbumByIdAsync(albumId)).ReturnsAsync(album);
+        // Voeg toe aan in-memory DbContext
+        _context.Albums.Add(album);
+        await _context.SaveChangesAsync();
 
         // Act
         var result = await _albumService.GetAlbumByIdAsync(albumId);
@@ -117,26 +122,30 @@ public class AlbumServiceTests
         Assert.Equal(album.ImageUrl, result.ImageUrl);
     }
 
+
     [Fact]
     public async Task GetAllAlbums_ShouldReturnAllAlbums()
     {
         // Arrange
         var albums = new List<AlbumModel>
-        {
-            new () { Id = Guid.NewGuid(), Name = "Album1", Artist = "Artist1", ImageUrl = "http://image1.com" },
-            new () { Id = Guid.NewGuid(), Name = "Album2", Artist = "Artist2", ImageUrl = "http://image2.com" }
-        };
+    {
+        new AlbumModel { Id = Guid.NewGuid(), Name = "Album1", Artist = "Artist1", ImageUrl = "http://image1.com" },
+        new AlbumModel { Id = Guid.NewGuid(), Name = "Album2", Artist = "Artist2", ImageUrl = "http://image2.com" }
+    };
 
-        _mockRepository.Setup(r => r.GetAllAlbumsAsync()).ReturnsAsync(albums);
+        // Voeg albums toe aan de in-memory DbContext
+        _context.Albums.AddRange(albums);
+        await _context.SaveChangesAsync();
 
         // Act
         var result = await _albumService.GetAllAlbumsAsync();
 
         // Assert
         Assert.Equal(2, result.Count());
-        Assert.Equal("Album1", result.First().Name);
-        Assert.Equal("Album2", result.Last().Name);
+        Assert.Contains(result, a => a.Name == "Album1");
+        Assert.Contains(result, a => a.Name == "Album2");
     }
+
 
 
     [Fact]
