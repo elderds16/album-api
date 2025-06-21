@@ -5,6 +5,6 @@ namespace Album.Api.Models.Dtos
 		public string Title { get; set; } = string.Empty;
 		public string Artist { get; set; } = string.Empty;
 		public int Duration { get; set; }
-		public Guid AlbumId { get; set; }
+		//public Guid AlbumId { get; set; }
 	}
 }

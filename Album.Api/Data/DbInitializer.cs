@@ -40,31 +40,31 @@ public static class DbInitializer
         // Voeg 5 echte tracks toe per album
         var tracks = new List<Track>
         {
-            //new() { Title = "Wanna Be Startin' Somethin'", Artist = "Michael Jackson", Duration = 362, AlbumId = albumsByName["Thriller"].Id },
-            //new() { Title = "Baby Be Mine", Artist = "Michael Jackson", Duration = 257, AlbumId = albumsByName["Thriller"].Id },
-            //new() { Title = "The Girl Is Mine", Artist = "Michael Jackson", Duration = 225, AlbumId = albumsByName["Thriller"].Id },
-            //new() { Title = "Thriller", Artist = "Michael Jackson", Duration = 358, AlbumId = albumsByName["Thriller"].Id },
-            //new() { Title = "Beat It", Artist = "Michael Jackson", Duration = 258, AlbumId = albumsByName["Thriller"].Id },
+            new() { Title = "Wanna Be Startin' Somethin'", Artist = "Michael Jackson", Duration = 362, AlbumId = albumsByName["Thriller"].Id },
+            new() { Title = "Baby Be Mine", Artist = "Michael Jackson", Duration = 257, AlbumId = albumsByName["Thriller"].Id },
+            new() { Title = "The Girl Is Mine", Artist = "Michael Jackson", Duration = 225, AlbumId = albumsByName["Thriller"].Id },
+            new() { Title = "Thriller", Artist = "Michael Jackson", Duration = 358, AlbumId = albumsByName["Thriller"].Id },
+            new() { Title = "Beat It", Artist = "Michael Jackson", Duration = 258, AlbumId = albumsByName["Thriller"].Id },
 
-            //new() { Title = "Hells Bells", Artist = "AC/DC", Duration = 312, AlbumId = albumsByName["Back in Black"].Id },
-            //new() { Title = "Shoot to Thrill", Artist = "AC/DC", Duration = 317, AlbumId = albumsByName["Back in Black"].Id },
-            //new() { Title = "Back in Black", Artist = "AC/DC", Duration = 255, AlbumId = albumsByName["Back in Black"].Id },
+            new() { Title = "Hells Bells", Artist = "AC/DC", Duration = 312, AlbumId = albumsByName["Back in Black"].Id },
+            new() { Title = "Shoot to Thrill", Artist = "AC/DC", Duration = 317, AlbumId = albumsByName["Back in Black"].Id },
+            new() { Title = "Back in Black", Artist = "AC/DC", Duration = 255, AlbumId = albumsByName["Back in Black"].Id },
             //new() { Title = "You Shook Me All Night Long", Artist = "AC/DC", Duration = 210, AlbumId = albumsByName["Back in Black"].Id },
             //new() { Title = "Rock and Roll Ain't Noise Pollution", Artist = "AC/DC", Duration = 251, AlbumId = albumsByName["Back in Black"].Id },
 
-            //new() { Title = "Speak to Me", Artist = "Pink Floyd", Duration = 90, AlbumId = albumsByName["The Dark Side of the Moon"].Id },
-            //new() { Title = "Breathe", Artist = "Pink Floyd", Duration = 163, AlbumId = albumsByName["The Dark Side of the Moon"].Id },
+            new() { Title = "Speak to Me", Artist = "Pink Floyd", Duration = 90, AlbumId = albumsByName["The Dark Side of the Moon"].Id },
+            new() { Title = "Breathe", Artist = "Pink Floyd", Duration = 163, AlbumId = albumsByName["The Dark Side of the Moon"].Id },
             //new() { Title = "Time", Artist = "Pink Floyd", Duration = 412, AlbumId = albumsByName["The Dark Side of the Moon"].Id },
             //new() { Title = "Money", Artist = "Pink Floyd", Duration = 382, AlbumId = albumsByName["The Dark Side of the Moon"].Id },
             //new() { Title = "Us and Them", Artist = "Pink Floyd", Duration = 462, AlbumId = albumsByName["The Dark Side of the Moon"].Id },
 
-            //new() { Title = "I Will Always Love You", Artist = "Whitney Houston", Duration = 273, AlbumId = albumsByName["The Bodyguard"].Id },
+            new() { Title = "I Will Always Love You", Artist = "Whitney Houston", Duration = 273, AlbumId = albumsByName["The Bodyguard"].Id },
             //new() { Title = "I Have Nothing", Artist = "Whitney Houston", Duration = 272, AlbumId = albumsByName["The Bodyguard"].Id },
             //new() { Title = "I'm Every Woman", Artist = "Whitney Houston", Duration = 270, AlbumId = albumsByName["The Bodyguard"].Id },
             //new() { Title = "Run to You", Artist = "Whitney Houston", Duration = 254, AlbumId = albumsByName["The Bodyguard"].Id },
             //new() { Title = "Queen of the Night", Artist = "Whitney Houston", Duration = 234, AlbumId = albumsByName["The Bodyguard"].Id },
 
-            //new() { Title = "Dreams", Artist = "Fleetwood Mac", Duration = 257, AlbumId = albumsByName["Rumours"].Id },
+            new() { Title = "Dreams", Artist = "Fleetwood Mac", Duration = 257, AlbumId = albumsByName["Rumours"].Id },
             //new() { Title = "Don't Stop", Artist = "Fleetwood Mac", Duration = 219, AlbumId = albumsByName["Rumours"].Id },
             //new() { Title = "Go Your Own Way", Artist = "Fleetwood Mac", Duration = 223, AlbumId = albumsByName["Rumours"].Id },
             //new() { Title = "The Chain", Artist = "Fleetwood Mac", Duration = 273, AlbumId = albumsByName["Rumours"].Id },
