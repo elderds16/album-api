@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Album.Api.Migrations
 {
     [DbContext(typeof(AlbumContext))]
-    [Migration("20250620222338_AddTrackEntity")]
-    partial class AddTrackEntity
+    [Migration("20250621000120_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

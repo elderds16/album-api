@@ -7,14 +7,24 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Album.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTrackEntity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_Albums_Name_Artist",
-                table: "Albums");
+            migrationBuilder.CreateTable(
+                name: "Albums",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Artist = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ImageUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Albums", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Tracks",
@@ -50,11 +60,8 @@ namespace Album.Api.Migrations
             migrationBuilder.DropTable(
                 name: "Tracks");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Albums_Name_Artist",
-                table: "Albums",
-                columns: new[] { "Name", "Artist" },
-                unique: true);
+            migrationBuilder.DropTable(
+                name: "Albums");
         }
     }
 }
