@@ -13,12 +13,8 @@ public class Program
         var builder = CreateBuilder(args);
         var app = builder.Build();
 
-        //app.UseCors("AllowS3Bucket");
-        app.UseCors(policy =>
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-        );
+        app.UseCors("AllowS3Bucket");
+
 
 
         InitializeDatabase(app);
@@ -51,7 +47,16 @@ public class Program
 
         // Add services to the container.
 
-        builder.Services.AddCors();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowS3Bucket", policy =>
+            {
+                policy.WithOrigins("http://cnsd-react-app-992382793320.s3-website-us-east-1.amazonaws.com") // je echte bucket URL hier
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+
 
 
         builder.Services.AddControllers();
