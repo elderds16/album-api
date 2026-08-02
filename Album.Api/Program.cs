@@ -15,8 +15,6 @@ public class Program
 
         app.UseCors("AllowS3Bucket");
 
-
-
         InitializeDatabase(app);
 
         // Configure the HTTP request pipeline.
@@ -51,13 +49,11 @@ public class Program
         {
             options.AddPolicy("AllowS3Bucket", policy =>
             {
-                policy.WithOrigins("http://cnsd-react-app-992382793320.s3-website-us-east-1.amazonaws.com") // je echte bucket URL hier
+                policy.WithOrigins("http://cnsd-react-app-992382793320.s3-website-us-east-1.amazonaws.com") 
                       .AllowAnyMethod()
                       .AllowAnyHeader();
             });
         });
-
-
 
         builder.Services.AddControllers();
 
